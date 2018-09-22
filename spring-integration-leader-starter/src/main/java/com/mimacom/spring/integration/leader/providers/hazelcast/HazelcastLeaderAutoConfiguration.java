@@ -19,9 +19,9 @@ import org.springframework.integration.leader.DefaultCandidate;
 
 @Configuration
 @ConditionalOnBean(HazelcastInstance.class)
-@EnableConfigurationProperties(LeaderConfigurationProperties.class)
 @AutoConfigureAfter(HazelcastAutoConfiguration.class)
 @ConditionalOnProperty(value = "spring-integration.leader.hazelcast.enabled", matchIfMissing = true)
+@EnableConfigurationProperties(LeaderConfigurationProperties.class)
 public class HazelcastLeaderAutoConfiguration {
 
     private final LeaderConfigurationProperties leaderConfigurationProperties;
