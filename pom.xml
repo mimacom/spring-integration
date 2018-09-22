@@ -21,6 +21,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
+        <spring-cloud-zookeeper-dependencies.version>2.0.0.RELEASE
+        </spring-cloud-zookeeper-dependencies.version>
     </properties>
 
     <modules>
@@ -45,7 +47,15 @@
                 <artifactId>spring-integration-hazelcast</artifactId>
                 <version>${spring-integration-hazelcast.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-zookeeper-dependencies</artifactId>
+                <version>${spring-cloud-zookeeper-dependencies.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
         </dependencies>
+
     </dependencyManagement>
 
     <build>
