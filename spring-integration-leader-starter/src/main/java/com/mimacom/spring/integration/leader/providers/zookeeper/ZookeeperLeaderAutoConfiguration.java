@@ -4,22 +4,19 @@ import com.mimacom.spring.integration.leader.LeaderConfigurationProperties;
 import com.mimacom.spring.integration.leader.providers.LeaderProvider;
 import org.apache.curator.framework.CuratorFramework;
 
-import org.springframework.boot.actuate.autoconfigure.health.ConditionalOnEnabledHealthIndicator;
-import org.springframework.boot.actuate.autoconfigure.health.HealthIndicatorAutoConfiguration;
-import org.springframework.boot.actuate.health.HealthIndicator;
-import org.springframework.boot.autoconfigure.AutoConfigureAfter;
+import org.springframework.boot.autoconfigure.AutoConfigureOrder;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.integration.zookeeper.config.CuratorFrameworkFactoryBean;
+import org.springframework.core.Ordered;
 import org.springframework.integration.zookeeper.config.LeaderInitiatorFactoryBean;
 import org.springframework.integration.zookeeper.leader.LeaderInitiator;
 
 @Configuration
+@AutoConfigureOrder(Ordered.LOWEST_PRECEDENCE)
 @ConditionalOnBean(CuratorFramework.class)
 @EnableConfigurationProperties({ZookeeperLeaderConfigurationProperties.class, LeaderConfigurationProperties.class})
 @ConditionalOnProperty(value = "spring-integration.leader.zookeeper.enabled", matchIfMissing = true)
