@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/mimacom/spring-integration.svg?branch=master)](https://travis-ci.org/mimacom/spring-integration)
+
 # spring-integration
 Extensions for spring-integration
 
