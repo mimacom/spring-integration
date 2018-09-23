@@ -3,7 +3,7 @@ package com.mimacom.spring.integration.leader.providers.hazelcast;
 import java.util.UUID;
 
 import com.hazelcast.core.HazelcastInstance;
-import com.mimacom.spring.integration.leader.LeaderConfigurationProperties;
+import com.mimacom.spring.integration.leader.providers.LeaderConfigurationProperties;
 import com.mimacom.spring.integration.leader.providers.LeaderProvider;
 
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;

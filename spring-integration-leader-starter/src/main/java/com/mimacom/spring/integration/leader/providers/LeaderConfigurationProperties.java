@@ -1,4 +1,4 @@
-package com.mimacom.spring.integration.leader;
+package com.mimacom.spring.integration.leader.providers;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.EnvironmentAware;

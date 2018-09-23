@@ -1,6 +1,6 @@
 package com.mimacom.spring.integration.leader.providers.zookeeper;
 
-import com.mimacom.spring.integration.leader.LeaderConfigurationProperties;
+import com.mimacom.spring.integration.leader.providers.LeaderConfigurationProperties;
 import com.mimacom.spring.integration.leader.providers.LeaderProvider;
 import org.apache.curator.framework.CuratorFramework;
 
