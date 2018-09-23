@@ -12,7 +12,7 @@ public class LeaderHealthIndicator extends AbstractHealthIndicator {
 
     private final LeaderProvider leaderProvider;
 
-    public LeaderHealthIndicator(LeaderProvider leaderProvider) {
+    LeaderHealthIndicator(LeaderProvider leaderProvider) {
         this.leaderProvider = leaderProvider;
     }
 
