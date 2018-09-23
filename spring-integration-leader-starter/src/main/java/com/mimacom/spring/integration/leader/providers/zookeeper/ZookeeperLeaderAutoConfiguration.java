@@ -22,6 +22,7 @@ import org.springframework.integration.zookeeper.leader.LeaderInitiator;
 @ConditionalOnBean(CuratorFramework.class)
 @EnableConfigurationProperties({ZookeeperLeaderConfigurationProperties.class, LeaderConfigurationProperties.class})
 @ConditionalOnProperty(value = "spring-integration.leader.zookeeper.enabled", matchIfMissing = true)
+@ConditionalOnMissingBean(LeaderProvider.class)
 public class ZookeeperLeaderAutoConfiguration {
 
     private final ZookeeperLeaderConfigurationProperties zookeeperLeaderConfigurationProperties;
