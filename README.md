@@ -14,3 +14,5 @@ A spring-boot auto-configuration starter module that allows an AbstractEndpoint 
 Useful when multiple service-instances are running and a leader has to be elected to take core of certain tasks such as:
  * Polling against a Channel/Source
  * Running Scheduled Jobs
+
+For more information see here: https://github.com/mimacom/spring-integration/wiki/spring-integration-leader-starter
