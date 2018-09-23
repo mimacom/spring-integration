@@ -3,8 +3,6 @@ package com.mimacom.spring.integration.leader;
 
 import javax.sql.DataSource;
 
-import com.mimacom.spring.integration.leader.providers.hazelcast.HazelcastLeaderAutoConfiguration;
-import com.mimacom.spring.integration.zookeeper.ZookeeperAutoConfiguration;
 import org.junit.runner.RunWith;
 
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -21,9 +19,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 public class LockRegistryLeaderAwareAutoConfigurationTest extends AbstractLeaderAwareAutoConfigurationTest {
 
     @SpringBootApplication(exclude = {
-            HazelcastLeaderAutoConfiguration.class,
-            ZookeeperAutoConfiguration.class,
-            org.springframework.cloud.zookeeper.ZookeeperAutoConfiguration.class
+            org.springframework.cloud.zookeeper.ZookeeperAutoConfiguration.class,
+            com.mimacom.spring.integration.zookeeper.ZookeeperAutoConfiguration.class
     })
     static class TestConfigUsingLockRegistry {
 

@@ -23,21 +23,22 @@ import org.springframework.integration.leader.Context;
 @Configuration
 @AutoConfigureAfter({ZookeeperLeaderAutoConfiguration.class, HazelcastLeaderAutoConfiguration.class, LockRegistryLeaderAutoConfiguration.class})
 @ConditionalOnBean(LeaderProvider.class)
-@EnableConfigurationProperties(LeaderAwareIntegrationProperties.class)
-class LeaderAwareIntegrationAutoConfiguration {
+@EnableConfigurationProperties(LeaderAwareConfigurationProperties.class)
+class LeaderAwareAutoConfiguration {
 
-    private final LeaderAwareIntegrationProperties leaderAwareIntegrationProperties;
+    private final LeaderAwareConfigurationProperties leaderAwareConfigurationProperties;
 
-    LeaderAwareIntegrationAutoConfiguration(LeaderAwareIntegrationProperties leaderAwareIntegrationProperties) {
-        this.leaderAwareIntegrationProperties = leaderAwareIntegrationProperties;
+    LeaderAwareAutoConfiguration(LeaderAwareConfigurationProperties leaderAwareConfigurationProperties) {
+        this.leaderAwareConfigurationProperties = leaderAwareConfigurationProperties;
     }
 
     @Bean
     LeaderAwareEndpointPostProcessor leaderAwareEndpointPostProcessor() {
-        return new LeaderAwareEndpointPostProcessor(this.leaderAwareIntegrationProperties.getEndpoints());
+        return new LeaderAwareEndpointPostProcessor(this.leaderAwareConfigurationProperties.getEndpoints());
     }
 
     @Configuration
+    @ConditionalOnBean(LeaderProvider.class)
     @ConditionalOnClass(HealthIndicator.class)
     @AutoConfigureAfter({HealthIndicatorAutoConfiguration.class})
     static class LeaderHealthAutoConfiguration {

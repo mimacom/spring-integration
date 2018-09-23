@@ -22,7 +22,7 @@ public class LeaderAwareEndpointPostProcessor implements BeanPostProcessor, Appl
 
     private List<AbstractEndpoint> endpoints = new ArrayList<>();
 
-    public LeaderAwareEndpointPostProcessor(List<String> pollingEndpointBeanNames) {
+    LeaderAwareEndpointPostProcessor(List<String> pollingEndpointBeanNames) {
         this.pollingEndpointBeanNames.addAll(pollingEndpointBeanNames);
     }
 

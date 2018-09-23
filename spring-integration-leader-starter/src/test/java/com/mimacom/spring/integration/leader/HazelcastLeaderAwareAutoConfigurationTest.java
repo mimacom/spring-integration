@@ -9,7 +9,6 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.cloud.zookeeper.ZookeeperAutoConfiguration;
 import org.springframework.integration.hazelcast.leader.LeaderInitiator;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -25,7 +24,10 @@ public class HazelcastLeaderAwareAutoConfigurationTest extends AbstractLeaderAwa
         assertThat(leaderInitiator).isNotNull();
     }
 
-    @SpringBootApplication(exclude = {ZookeeperAutoConfiguration.class, com.mimacom.spring.integration.zookeeper.ZookeeperAutoConfiguration.class})
+    @SpringBootApplication(exclude = {
+            org.springframework.cloud.zookeeper.ZookeeperAutoConfiguration.class,
+            com.mimacom.spring.integration.zookeeper.ZookeeperAutoConfiguration.class
+    })
     static class TestConfigUsingHazelcast {
 
     }

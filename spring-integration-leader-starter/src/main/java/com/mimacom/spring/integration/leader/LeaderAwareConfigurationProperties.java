@@ -10,7 +10,7 @@ import org.springframework.validation.annotation.Validated;
 
 @ConfigurationProperties("spring-integration.leader-aware")
 @Validated
-public class LeaderAwareIntegrationProperties {
+public class LeaderAwareConfigurationProperties {
 
     @NotNull
     private List<String> endpoints = new ArrayList<>();

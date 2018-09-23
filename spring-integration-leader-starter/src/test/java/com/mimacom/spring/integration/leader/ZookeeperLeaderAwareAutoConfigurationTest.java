@@ -2,7 +2,6 @@ package com.mimacom.spring.integration.leader;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.mimacom.spring.integration.leader.providers.hazelcast.HazelcastLeaderAutoConfiguration;
 import org.apache.curator.test.TestingServer;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -10,13 +9,13 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.cloud.zookeeper.ZookeeperProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.integration.zookeeper.config.CuratorFrameworkFactoryBean;
 import org.springframework.integration.zookeeper.leader.LeaderInitiator;
 import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest
+@SpringBootTest(properties = {"spring.hazelcast.config=classpath:config/my-hazelcast.xml"})
 public class ZookeeperLeaderAwareAutoConfigurationTest extends AbstractLeaderAwareAutoConfigurationTest {
 
     @Autowired(required = false)
@@ -27,12 +26,14 @@ public class ZookeeperLeaderAwareAutoConfigurationTest extends AbstractLeaderAwa
         assertThat(leaderInitiator).isNotNull();
     }
 
-    @SpringBootApplication(exclude = HazelcastLeaderAutoConfiguration.class)
+    @SpringBootApplication
     static class TestConfigUsingZookeeper {
 
         @Bean
-        CuratorFrameworkFactoryBean curatorFramework() throws Exception {
-            return new CuratorFrameworkFactoryBean((this.testingServer().getConnectString()));
+        ZookeeperProperties zookeeperProperties() throws Exception {
+            ZookeeperProperties zookeeperProperties = new ZookeeperProperties();
+            zookeeperProperties.setConnectString(this.testingServer().getConnectString());
+            return zookeeperProperties;
         }
 
         @Bean(destroyMethod = "close")

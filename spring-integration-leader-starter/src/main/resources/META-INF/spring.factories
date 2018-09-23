@@ -1,5 +1,5 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-com.mimacom.spring.integration.leader.LeaderAwareIntegrationAutoConfiguration,\
+com.mimacom.spring.integration.leader.LeaderAwareAutoConfiguration,\
 com.mimacom.spring.integration.leader.providers.hazelcast.HazelcastLeaderAutoConfiguration,\
 com.mimacom.spring.integration.leader.providers.zookeeper.ZookeeperLeaderAutoConfiguration,\
 com.mimacom.spring.integration.leader.providers.lockregistry.LockRegistryLeaderAutoConfiguration
