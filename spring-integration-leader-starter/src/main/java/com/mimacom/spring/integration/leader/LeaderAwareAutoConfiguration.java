@@ -21,7 +21,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.integration.leader.Context;
 
 @Configuration
-@AutoConfigureAfter({ZookeeperLeaderAutoConfiguration.class, HazelcastLeaderAutoConfiguration.class, LockRegistryLeaderAutoConfiguration.class})
+@AutoConfigureAfter({
+        ZookeeperLeaderAutoConfiguration.class,
+        HazelcastLeaderAutoConfiguration.class,
+        LockRegistryLeaderAutoConfiguration.class
+})
 @ConditionalOnBean(LeaderProvider.class)
 @EnableConfigurationProperties(LeaderAwareConfigurationProperties.class)
 class LeaderAwareAutoConfiguration {
