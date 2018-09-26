@@ -20,7 +20,7 @@ public class LeaderAwareConfigurationProperties {
     private List<String> endpoints = new ArrayList<>();
 
     @NotBlank
-    private String defaultRole;
+    private String defaultRole = "default";
 
     public List<String> getEndpoints() {
         return endpoints;
