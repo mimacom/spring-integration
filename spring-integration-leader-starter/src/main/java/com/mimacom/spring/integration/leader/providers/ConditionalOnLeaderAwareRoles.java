@@ -13,5 +13,4 @@ import org.springframework.context.annotation.Conditional;
 @Target({ElementType.TYPE, ElementType.METHOD})
 @Documented
 @Conditional(OnLeaderAwareRolesCondition.class)
-public @interface ConditionalOnLeaderAwareRoles {
-}
+public @interface ConditionalOnLeaderAwareRoles {}

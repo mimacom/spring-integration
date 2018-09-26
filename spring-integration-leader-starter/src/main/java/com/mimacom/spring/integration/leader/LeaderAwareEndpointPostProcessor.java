@@ -13,20 +13,24 @@ import org.springframework.integration.endpoint.AbstractEndpoint;
 import org.springframework.integration.leader.event.AbstractLeaderEvent;
 import org.springframework.integration.leader.event.OnGrantedEvent;
 import org.springframework.integration.leader.event.OnRevokedEvent;
+import org.springframework.util.Assert;
 
 public class LeaderAwareEndpointPostProcessor implements BeanPostProcessor, ApplicationListener<AbstractLeaderEvent> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LeaderAwareEndpointPostProcessor.class);
 
-    private final List<String> pollingEndpointBeanNames = new ArrayList<>();
+    private final List<String> leaderAwareEndpointNames = new ArrayList<>();
 
     private List<AbstractEndpoint> endpoints = new ArrayList<>();
 
     private String role;
 
-    LeaderAwareEndpointPostProcessor(List<String> pollingEndpointBeanNames, String role) {
+    LeaderAwareEndpointPostProcessor(String role, List<String> leaderAwareEndpointNames) {
+        Assert.hasText(role, "Role must not be empty");
         this.role = role;
-        this.pollingEndpointBeanNames.addAll(pollingEndpointBeanNames);
+        if (leaderAwareEndpointNames != null) {
+            this.leaderAwareEndpointNames.addAll(leaderAwareEndpointNames);
+        }
     }
 
     @Override
@@ -34,14 +38,14 @@ public class LeaderAwareEndpointPostProcessor implements BeanPostProcessor, Appl
         if (!(bean instanceof AbstractEndpoint)) {
             return bean;
         }
-        if (!this.pollingEndpointBeanNames.contains(beanName)) {
-            LOGGER.warn("'{}' bean is not configured to become leader-aware", beanName);
+        if (!this.leaderAwareEndpointNames.contains(beanName)) {
+            LOGGER.debug("'{}' bean is not configured to become leader-aware", beanName);
             return bean;
         }
-        LOGGER.info("'{}' bean is going to be configured leader-aware", beanName);
-        AbstractEndpoint pollingEndpoint = (AbstractEndpoint) bean;
-        pollingEndpoint.setAutoStartup(false);
-        this.endpoints.add(pollingEndpoint);
+        LOGGER.info("'{}' spring-integration endpoint is going to be configured leader-aware for role: ", beanName, this.role);
+        AbstractEndpoint endpoint = (AbstractEndpoint) bean;
+        endpoint.setAutoStartup(false);
+        this.endpoints.add(endpoint);
         return bean;
     }
 

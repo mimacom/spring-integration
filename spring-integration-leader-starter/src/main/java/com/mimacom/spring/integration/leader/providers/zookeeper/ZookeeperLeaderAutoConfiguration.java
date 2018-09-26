@@ -33,9 +33,11 @@ import org.springframework.integration.zookeeper.leader.LeaderInitiator;
 @EnableConfigurationProperties({LeaderAwareConfigurationProperties.class, ZookeeperLeaderConfigurationProperties.class})
 public class ZookeeperLeaderAutoConfiguration {
 
+    private static final String PROVIDER_TYPE_NAME = "zookeeper";
+
     @Bean
-    public LeaderProviderMarker providerMarker() {
-        return new LeaderProviderMarker();
+    public LeaderProviderMarker leaderProviderMarker() {
+        return new LeaderProviderMarker(PROVIDER_TYPE_NAME);
     }
 
     @Bean
@@ -53,10 +55,9 @@ public class ZookeeperLeaderAutoConfiguration {
 
         @Override
         protected BeanDefinition leaderInitiatorBeanDefinition(BeanFactory beanFactory, String role, ApplicationEventPublisher applicationEventPublisher) {
-            CuratorFramework curatorFramework = beanFactory.getBean(CuratorFramework.class);
             ZookeeperLeaderConfigurationProperties zookeeperLeaderConfigurationProperties = beanFactory.getBean(ZookeeperLeaderConfigurationProperties.class);
             return BeanDefinitionBuilder.genericBeanDefinition(LeaderInitiatorFactoryBeanAdapter.class)
-                    .addConstructorArgValue(curatorFramework)
+                    .addConstructorArgValue(beanFactory.getBean(CuratorFramework.class))
                     .addConstructorArgValue(role)
                     .addConstructorArgValue(zookeeperLeaderConfigurationProperties.getPath())
                     .getBeanDefinition();

@@ -1,14 +1,11 @@
 package com.mimacom.spring.integration.leader.providers;
 
-import java.util.List;
-
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.BeanDefinitionRegistryPostProcessor;
-import org.springframework.boot.context.properties.bind.BindResult;
 import org.springframework.boot.context.properties.bind.Bindable;
 import org.springframework.boot.context.properties.bind.Binder;
 import org.springframework.context.ApplicationContext;
@@ -25,26 +22,19 @@ public abstract class AbstractLeaderInitiatorPostProcessor implements Applicatio
 
     @Override
     public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry) throws BeansException {
-        Assert.isInstanceOf(ConfigurableListableBeanFactory.class, registry, "Zookeeper Leader Auto-configuration can only be used with a ConfigurableListableBeanFactory");
-        ConfigurableListableBeanFactory configurableListableBeanFactory = (ConfigurableListableBeanFactory) registry;
+        Assert.isInstanceOf(BeanFactory.class, registry, "AbstractLeaderInitiatorPostProcessor can only be used with a BeanFactory");
+        BeanFactory beanFactory = (BeanFactory) registry;
         Binder binder = Binder.get(this.applicationContext.getEnvironment());
-
-        BindResult<List<String>> bind = binder.bind("spring-integration.leader-aware.roles", Bindable.listOf(String.class));
-        bind.get().forEach((String role) -> registry.registerBeanDefinition(
-                role + "_leaderInitiator",
-                leaderInitiatorBeanDefinition(
-                        configurableListableBeanFactory,
-                        role,
-                        applicationEventPublisher)
-                )
-        );
+        binder.bind("spring-integration.leader-aware.roles", Bindable.listOf(String.class))
+                .ifBound(roles -> roles.forEach(role -> {
+                    BeanDefinition leaderInitiatorBeanDefinition = leaderInitiatorBeanDefinition(beanFactory, role, applicationEventPublisher);
+                    registry.registerBeanDefinition(role + "_leaderInitiator", leaderInitiatorBeanDefinition);
+                }));
     }
-
-    protected abstract BeanDefinition leaderInitiatorBeanDefinition(BeanFactory beanFactory, String role, ApplicationEventPublisher applicationEventPublisher);
 
     @Override
     public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
-        // nothing
+        // nothing to do
     }
 
     @Override
@@ -56,4 +46,7 @@ public abstract class AbstractLeaderInitiatorPostProcessor implements Applicatio
     public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
         this.applicationEventPublisher = applicationEventPublisher;
     }
+
+    protected abstract BeanDefinition leaderInitiatorBeanDefinition(BeanFactory beanFactory, String role, ApplicationEventPublisher applicationEventPublisher);
+
 }

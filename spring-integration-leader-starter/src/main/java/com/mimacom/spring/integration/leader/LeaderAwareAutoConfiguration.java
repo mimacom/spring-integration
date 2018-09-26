@@ -28,7 +28,9 @@ public class LeaderAwareAutoConfiguration {
 
     @Bean
     LeaderAwareEndpointPostProcessor leaderAwareEndpointPostProcessor() {
-        return new LeaderAwareEndpointPostProcessor(this.leaderAwareConfigurationProperties.getEndpoints(), this.leaderAwareConfigurationProperties.getDefaultRole());
+        return new LeaderAwareEndpointPostProcessor(
+                this.leaderAwareConfigurationProperties.getDefaultRole(), this.leaderAwareConfigurationProperties.getEndpoints()
+        );
     }
 
 }

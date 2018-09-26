@@ -29,15 +29,17 @@ import org.springframework.integration.support.locks.LockRegistry;
 @ConditionalOnProperty(value = "spring-integration.leader.lock-registry.enabled", matchIfMissing = true)
 public class LockRegistryLeaderAutoConfiguration {
 
+    private static final String PROVIDER_TYPE_NAME = "lockRegistry";
+
     @Bean
-    public LeaderProviderMarker providerMarker() {
-        return new LeaderProviderMarker();
+    public LeaderProviderMarker leaderProviderMarker() {
+        return new LeaderProviderMarker(PROVIDER_TYPE_NAME);
     }
 
     @Bean
     @ConditionalOnMissingBean(LockRegistryLeaderInitiator.class)
-    public static LeaderInitiatorPostProcessor lockRegistryLeaderInitiatorPostProcessor() {
-        return new LeaderInitiatorPostProcessor();
+    public static LockRegistryLeaderInitiatorPostProcessor lockRegistryLeaderInitiatorPostProcessor() {
+        return new LockRegistryLeaderInitiatorPostProcessor();
     }
 
     @Bean
@@ -45,15 +47,13 @@ public class LockRegistryLeaderAutoConfiguration {
         return new LeaderProviderPostProcessor<>(LockRegistryLeaderInitiator.class, LockRegistryLeaderProvider.class);
     }
 
-    private static class LeaderInitiatorPostProcessor extends AbstractLeaderInitiatorPostProcessor {
+    private static class LockRegistryLeaderInitiatorPostProcessor extends AbstractLeaderInitiatorPostProcessor {
 
         @Override
         protected BeanDefinition leaderInitiatorBeanDefinition(BeanFactory beanFactory, String role, ApplicationEventPublisher applicationEventPublisher) {
-            LockRegistry lockRegistry = beanFactory.getBean(LockRegistry.class);
-            DefaultCandidate candidate = new DefaultCandidate(UUID.randomUUID().toString(), role);
             return BeanDefinitionBuilder.genericBeanDefinition(LockRegistryLeaderInitiator.class)
-                    .addConstructorArgValue(lockRegistry)
-                    .addConstructorArgValue(candidate)
+                    .addConstructorArgValue(beanFactory.getBean(LockRegistry.class))
+                    .addConstructorArgValue(new DefaultCandidate(UUID.randomUUID().toString(), role))
                     .addPropertyValue("leaderEventPublisher", new DefaultLeaderEventPublisher(applicationEventPublisher))
                     .getBeanDefinition();
         }

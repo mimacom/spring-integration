@@ -12,7 +12,4 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @ConditionalOnBean(LeaderProviderMarker.class)
-public @interface OnConditionalLeaderProvider {
-
-
-}
+public @interface OnConditionalLeaderProvider {}

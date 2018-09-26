@@ -31,15 +31,17 @@ import org.springframework.integration.leader.event.DefaultLeaderEventPublisher;
 @ConditionalOnProperty(value = "spring-integration.leader.hazelcast.enabled", matchIfMissing = true)
 public class HazelcastLeaderAutoConfiguration {
 
+    private static final String PROVIDER_TYPE_NAME = "hazelcast";
+
     @Bean
-    public LeaderProviderMarker providerMarker() {
-        return new LeaderProviderMarker();
+    public LeaderProviderMarker leaderProviderMarker() {
+        return new LeaderProviderMarker(PROVIDER_TYPE_NAME);
     }
 
     @Bean
     @ConditionalOnMissingBean(LeaderInitiator.class)
-    public static LeaderInitiatorPostProcessor hazelcastLeaderInitiatorPostProcessor() {
-        return new LeaderInitiatorPostProcessor();
+    public static HazelcastLeaderInitiatorPostProcessor hazelcastLeaderInitiatorPostProcessor() {
+        return new HazelcastLeaderInitiatorPostProcessor();
     }
 
     @Bean
@@ -47,15 +49,13 @@ public class HazelcastLeaderAutoConfiguration {
         return new LeaderProviderPostProcessor<>(LeaderInitiator.class, HazelcastLeaderProvider.class);
     }
 
-    private static class LeaderInitiatorPostProcessor extends AbstractLeaderInitiatorPostProcessor {
+    private static class HazelcastLeaderInitiatorPostProcessor extends AbstractLeaderInitiatorPostProcessor {
 
         @Override
         protected BeanDefinition leaderInitiatorBeanDefinition(BeanFactory beanFactory, String role, ApplicationEventPublisher applicationEventPublisher) {
-            HazelcastInstance hazelcastInstance = beanFactory.getBean(HazelcastInstance.class);
-            DefaultCandidate candidate = new DefaultCandidate(UUID.randomUUID().toString(), role);
             return BeanDefinitionBuilder.genericBeanDefinition(LeaderInitiator.class)
-                    .addConstructorArgValue(hazelcastInstance)
-                    .addConstructorArgValue(candidate)
+                    .addConstructorArgValue(beanFactory.getBean(HazelcastInstance.class))
+                    .addConstructorArgValue(new DefaultCandidate(UUID.randomUUID().toString(), role))
                     .addPropertyValue("leaderEventPublisher", new DefaultLeaderEventPublisher(applicationEventPublisher))
                     .getBeanDefinition();
         }
