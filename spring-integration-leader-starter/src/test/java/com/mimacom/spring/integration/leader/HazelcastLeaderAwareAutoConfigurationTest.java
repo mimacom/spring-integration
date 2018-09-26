@@ -40,16 +40,10 @@ public class HazelcastLeaderAwareAutoConfigurationTest extends AbstractLeaderAwa
     })
     static class TestConfigUsingHazelcast {
 
-        private final HazelcastInstance hazelcastInstance;
-
-        TestConfigUsingHazelcast(HazelcastInstance hazelcastInstance) {
-            this.hazelcastInstance = hazelcastInstance;
-        }
-
         @Bean
-        public LeaderInitiator leaderInitiatorxxx() {
+        public LeaderInitiator leaderInitiator(HazelcastInstance hazelcastInstance) {
             DefaultCandidate candidate = new DefaultCandidate(UUID.randomUUID().toString(), "xxx");
-            return new LeaderInitiator(this.hazelcastInstance, candidate);
+            return new LeaderInitiator(hazelcastInstance, candidate);
         }
 
     }
