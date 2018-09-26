@@ -1,5 +1,7 @@
 package com.mimacom.spring.integration.leader.actuator;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import com.mimacom.spring.integration.leader.providers.LeaderProvider;
@@ -10,18 +12,21 @@ import org.springframework.integration.leader.Context;
 
 public class LeaderHealthIndicator extends AbstractHealthIndicator {
 
-    private final LeaderProvider leaderProvider;
+    private final List<LeaderProvider> leaderProvider = new ArrayList<>();
 
-    LeaderHealthIndicator(LeaderProvider leaderProvider) {
-        this.leaderProvider = leaderProvider;
+    LeaderHealthIndicator(List<LeaderProvider> leaderProvider) {
+        this.leaderProvider.addAll(leaderProvider);
     }
 
     @Override
     protected void doHealthCheck(Health.Builder builder) {
-        Context context = Objects.requireNonNull(leaderProvider.context());
-        builder.up().withDetail("is-leader", context.isLeader());
-        if (context.getRole() != null) {
-            builder.withDetail("role", context.getRole());
+        for (LeaderProvider provider : leaderProvider) {
+            Context context = Objects.requireNonNull(provider.context());
+            builder.up().withDetail("is-leader", context.isLeader());
+            if (context.getRole() != null) {
+                builder.withDetail("role", context.getRole());
+            }
         }
+
     }
 }

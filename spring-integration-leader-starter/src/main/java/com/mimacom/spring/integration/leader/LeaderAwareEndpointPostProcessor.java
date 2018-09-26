@@ -46,9 +46,9 @@ public class LeaderAwareEndpointPostProcessor implements BeanPostProcessor, Appl
     public void onApplicationEvent(AbstractLeaderEvent event) {
         LOGGER.info("Received Leader Event: {}", event);
         if (event instanceof OnGrantedEvent) {
-            this.endpoints.forEach(AbstractEndpoint::start);
+            //this.endpoints.forEach(AbstractEndpoint::start);
         } else if (event instanceof OnRevokedEvent) {
-            this.endpoints.forEach(AbstractEndpoint::stop);
+            //this.endpoints.forEach(AbstractEndpoint::stop);
         }
     }
 }

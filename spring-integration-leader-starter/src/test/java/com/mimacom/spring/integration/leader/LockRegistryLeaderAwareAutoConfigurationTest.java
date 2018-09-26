@@ -10,12 +10,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.integration.jdbc.lock.DefaultLockRepository;
 import org.springframework.integration.jdbc.lock.JdbcLockRegistry;
-import org.springframework.integration.support.leader.LockRegistryLeaderInitiator;
+import org.springframework.integration.jdbc.lock.LockRepository;
 import org.springframework.integration.support.locks.LockRegistry;
 import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest
+@SpringBootTest(properties = "spring-integration.leader.zookeeper.enabled=false")
 public class LockRegistryLeaderAwareAutoConfigurationTest extends AbstractLeaderAwareAutoConfigurationTest {
 
     @SpringBootApplication(exclude = {
@@ -24,27 +24,14 @@ public class LockRegistryLeaderAwareAutoConfigurationTest extends AbstractLeader
     })
     static class TestConfigUsingLockRegistry {
 
-        private final DataSource dataSource;
-
-        TestConfigUsingLockRegistry(DataSource dataSource) {
-            this.dataSource = dataSource;
+        @Bean
+        public LockRegistry lockRegistry(LockRepository lockRepository) {
+            return new JdbcLockRegistry(lockRepository);
         }
 
         @Bean
-        public LockRegistry lockRegistry() {
-            return new JdbcLockRegistry(this.lockRepository());
-        }
-
-        @Bean
-        public DefaultLockRepository lockRepository() {
-            return new DefaultLockRepository(this.dataSource);
-        }
-
-        @Bean
-        public LockRegistryLeaderInitiator leaderInitiator() {
-            LockRegistryLeaderInitiator lockRegistryLeaderInitiator = new LockRegistryLeaderInitiator(this.lockRegistry());
-            lockRegistryLeaderInitiator.start();
-            return lockRegistryLeaderInitiator;
+        public LockRepository lockRepository(DataSource dataSource) {
+            return new DefaultLockRepository(dataSource);
         }
 
     }
