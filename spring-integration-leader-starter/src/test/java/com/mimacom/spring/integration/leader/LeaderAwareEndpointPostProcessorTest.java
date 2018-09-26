@@ -45,7 +45,7 @@ public class LeaderAwareEndpointPostProcessorTest {
         assertThat(testingEndpoint.isRunning()).isFalse();
 
         // when
-        applicationEventPublisher.publishEvent(new OnGrantedEvent(new Object(), mock(Context.class), "test-role"));
+        applicationEventPublisher.publishEvent(new OnGrantedEvent(new Object(), mock(Context.class), "default-role"));
 
         // then
         assertThat(testingEndpoint.isRunning()).isTrue();
@@ -57,7 +57,7 @@ public class LeaderAwareEndpointPostProcessorTest {
         testingEndpoint.start();
 
         // when
-        applicationEventPublisher.publishEvent(new OnRevokedEvent(new Object(), mock(Context.class), "test-role"));
+        applicationEventPublisher.publishEvent(new OnRevokedEvent(new Object(), mock(Context.class), "default-role"));
 
         // then
         assertThat(testingEndpoint.isRunning()).isFalse();
@@ -71,7 +71,7 @@ public class LeaderAwareEndpointPostProcessorTest {
 
         @Bean
         LeaderAwareEndpointPostProcessor leaderAwareEndpointPostProcessor() {
-            return new LeaderAwareEndpointPostProcessor(Collections.singletonList(SAMPLE_ENDPOINT_NAME));
+            return new LeaderAwareEndpointPostProcessor(Collections.singletonList(SAMPLE_ENDPOINT_NAME), "default-role");
         }
 
         @Bean

@@ -22,7 +22,10 @@ public class LeaderAwareEndpointPostProcessor implements BeanPostProcessor, Appl
 
     private List<AbstractEndpoint> endpoints = new ArrayList<>();
 
-    LeaderAwareEndpointPostProcessor(List<String> pollingEndpointBeanNames) {
+    private String role;
+
+    LeaderAwareEndpointPostProcessor(List<String> pollingEndpointBeanNames, String role) {
+        this.role = role;
         this.pollingEndpointBeanNames.addAll(pollingEndpointBeanNames);
     }
 
@@ -45,10 +48,10 @@ public class LeaderAwareEndpointPostProcessor implements BeanPostProcessor, Appl
     @Override
     public void onApplicationEvent(AbstractLeaderEvent event) {
         LOGGER.info("Received Leader Event: {}", event);
-        if (event instanceof OnGrantedEvent) {
-            //this.endpoints.forEach(AbstractEndpoint::start);
-        } else if (event instanceof OnRevokedEvent) {
-            //this.endpoints.forEach(AbstractEndpoint::stop);
+        if (event instanceof OnGrantedEvent && event.getRole().equalsIgnoreCase(this.role)) {
+            this.endpoints.forEach(AbstractEndpoint::start);
+        } else if (event instanceof OnRevokedEvent && event.getRole().equalsIgnoreCase(this.role)) {
+            this.endpoints.forEach(AbstractEndpoint::stop);
         }
     }
 }
