@@ -16,6 +16,8 @@ import org.springframework.util.Assert;
 
 public abstract class AbstractLeaderInitiatorPostProcessor implements ApplicationEventPublisherAware, BeanDefinitionRegistryPostProcessor, ApplicationContextAware {
 
+    public static final String LEADER_INITIATOR_BEAN_NAME_POSTFIX = "_leaderInitiator";
+
     private ApplicationEventPublisher applicationEventPublisher;
 
     private ApplicationContext applicationContext;
@@ -28,7 +30,7 @@ public abstract class AbstractLeaderInitiatorPostProcessor implements Applicatio
         binder.bind("spring-integration.leader-aware.roles", Bindable.listOf(String.class))
                 .ifBound(roles -> roles.forEach(role -> {
                     BeanDefinition leaderInitiatorBeanDefinition = leaderInitiatorBeanDefinition(beanFactory, role, applicationEventPublisher);
-                    registry.registerBeanDefinition(role + "_leaderInitiator", leaderInitiatorBeanDefinition);
+                    registry.registerBeanDefinition(role + LEADER_INITIATOR_BEAN_NAME_POSTFIX, leaderInitiatorBeanDefinition);
                 }));
     }
 
