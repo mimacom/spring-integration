@@ -22,11 +22,13 @@ public class LeaderHealthIndicator extends AbstractHealthIndicator {
     protected void doHealthCheck(Health.Builder builder) {
         for (LeaderProvider provider : leaderProvider) {
             Context context = Objects.requireNonNull(provider.context());
-            builder.up().withDetail("is-leader", context.isLeader());
             if (context.getRole() != null) {
-                builder.withDetail("role", context.getRole());
+                builder.withDetail(context.getRole(), context.isLeader());
+            } else {
+                builder.withDetail("unknown", context.isLeader());
             }
         }
-
+        builder.up();
     }
+
 }

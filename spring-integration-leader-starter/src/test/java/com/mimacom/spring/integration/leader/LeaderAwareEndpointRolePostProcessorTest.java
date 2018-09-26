@@ -1,6 +1,6 @@
 package com.mimacom.spring.integration.leader;
 
-import static com.mimacom.spring.integration.leader.LeaderAwareEndpointPostProcessorTest.SAMPLE_ENDPOINT_NAME;
+import static com.mimacom.spring.integration.leader.LeaderAwareEndpointRolePostProcessorTest.SAMPLE_ENDPOINT_NAME;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
@@ -28,7 +28,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(properties = {"spring-integration.leader.endpoints=" + SAMPLE_ENDPOINT_NAME})
-public class LeaderAwareEndpointPostProcessorTest {
+public class LeaderAwareEndpointRolePostProcessorTest {
 
     static final String SAMPLE_ENDPOINT_NAME = "SAMPLE_ENDPOINT_NAME";
 
@@ -72,8 +72,8 @@ public class LeaderAwareEndpointPostProcessorTest {
     static class TestConfig {
 
         @Bean
-        LeaderAwareEndpointPostProcessor leaderAwareEndpointPostProcessor() {
-            return new LeaderAwareEndpointPostProcessor(DEFAULT_ROLE, Collections.singletonList(SAMPLE_ENDPOINT_NAME));
+        LeaderAwareEndpointRolePostProcessor leaderAwareEndpointPostProcessor() {
+            return new LeaderAwareEndpointRolePostProcessor(Collections.singletonList(DEFAULT_ROLE));
         }
 
         @Bean
@@ -81,6 +81,7 @@ public class LeaderAwareEndpointPostProcessorTest {
             return IntegrationFlows
                     .from(() -> UUID.randomUUID().toString(), c -> c
                             .id(SAMPLE_ENDPOINT_NAME)
+                            .role(DEFAULT_ROLE)
                             .poller(p -> p.fixedDelay(1000))
                             .autoStartup(true))
                     .handle((GenericHandler<String>) (payload, headers) -> null)

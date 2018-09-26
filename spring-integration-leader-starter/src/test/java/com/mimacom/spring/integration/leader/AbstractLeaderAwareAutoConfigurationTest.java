@@ -27,7 +27,7 @@ import org.springframework.test.context.ActiveProfiles;
 public abstract class AbstractLeaderAwareAutoConfigurationTest {
 
     @Autowired(required = false)
-    private LeaderAwareEndpointPostProcessor leaderAwareEndpointPostProcessor;
+    private LeaderAwareEndpointRolePostProcessor leaderAwareEndpointRolePostProcessor;
 
     @Autowired(required = false)
     private List<LeaderProvider> leaderProviders;
@@ -41,7 +41,7 @@ public abstract class AbstractLeaderAwareAutoConfigurationTest {
 
     @Test
     public void testLeaderAwareIntegrationAutoConfiguration() {
-        assertThat(leaderAwareEndpointPostProcessor).isNotNull();
+        assertThat(leaderAwareEndpointRolePostProcessor).isNotNull();
         assertThat(leaderProviders).isNotEmpty();
         assertThat(leaderHealthIndicator).isNotNull();
         await()

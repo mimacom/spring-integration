@@ -12,10 +12,12 @@ import org.springframework.validation.annotation.Validated;
 @Validated
 public class ZookeeperLeaderConfigurationProperties implements EnvironmentAware {
 
-    private static final String DEFAULT_PATH_FORMAT = "/spring/%s/leader-ship/";
+    private static final String DEFAULT_PATH_FORMAT = "/spring/%s/leader/";
+
+    private static final String DEFAULT_PATH_NAME = "ALL";
 
     @NotBlank
-    private String path = "/spring-integration/leader/";
+    private String path;
 
     @Override
     public void setEnvironment(Environment environment) {
@@ -23,7 +25,7 @@ public class ZookeeperLeaderConfigurationProperties implements EnvironmentAware 
         if (!StringUtils.isEmpty(applicationName)) {
             this.path = String.format(DEFAULT_PATH_FORMAT, applicationName);
         } else {
-            this.path = String.format(DEFAULT_PATH_FORMAT, "ALL");
+            this.path = String.format(DEFAULT_PATH_FORMAT, DEFAULT_PATH_NAME);
         }
     }
 
