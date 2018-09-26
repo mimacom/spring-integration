@@ -3,12 +3,15 @@ package com.mimacom.spring.integration.leader;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.List;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.integration.hazelcast.leader.LeaderInitiator;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -17,18 +20,22 @@ import org.springframework.test.context.junit4.SpringRunner;
 public class HazelcastLeaderAwareAutoConfigurationTest extends AbstractLeaderAwareAutoConfigurationTest {
 
     @Autowired(required = false)
-    private LeaderInitiator leaderInitiator;
+    private List<LeaderInitiator> leaderInitiator;
 
     @Test
     public void testHazelcastBasedLeaderInitiator() {
-        assertThat(leaderInitiator).isNotNull();
+        assertThat(leaderInitiator)
+                .isNotEmpty()
+                .hasOnlyElementsOfType(LeaderInitiator.class);
     }
 
-    @SpringBootApplication(exclude = {
+    @Configuration
+    @EnableAutoConfiguration(exclude = {
             org.springframework.cloud.zookeeper.ZookeeperAutoConfiguration.class,
             com.mimacom.spring.integration.zookeeper.ZookeeperAutoConfiguration.class
     })
     static class TestConfigUsingHazelcast {
+
 
     }
 }

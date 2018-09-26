@@ -1,16 +1,25 @@
 package com.mimacom.spring.integration.leader.providers.zookeeper;
 
-import com.mimacom.spring.integration.leader.providers.LeaderConfigurationProperties;
+import com.mimacom.spring.integration.leader.LeaderAwareConfigurationProperties;
+import com.mimacom.spring.integration.leader.providers.AbstractLeaderInitiatorPostProcessor;
+import com.mimacom.spring.integration.leader.providers.ConditionalOnLeaderAwareRoles;
 import com.mimacom.spring.integration.leader.providers.LeaderProvider;
+import com.mimacom.spring.integration.leader.providers.LeaderProviderMarker;
+import com.mimacom.spring.integration.leader.providers.LeaderProviderPostProcessor;
 import org.apache.curator.framework.CuratorFramework;
 
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.beans.factory.support.BeanDefinitionBuilder;
+import org.springframework.beans.factory.support.BeanDefinitionRegistryPostProcessor;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.integration.leader.Context;
 import org.springframework.integration.zookeeper.config.LeaderInitiatorFactoryBean;
 import org.springframework.integration.zookeeper.leader.LeaderInitiator;
 
@@ -20,35 +29,63 @@ import org.springframework.integration.zookeeper.leader.LeaderInitiator;
         "com.mimacom.spring.integration.zookeeper.ZookeeperAutoConfiguration"
 })
 @ConditionalOnBean(CuratorFramework.class)
-@EnableConfigurationProperties({ZookeeperLeaderConfigurationProperties.class, LeaderConfigurationProperties.class})
 @ConditionalOnProperty(value = "spring-integration.leader.zookeeper.enabled", matchIfMissing = true)
-@ConditionalOnMissingBean(LeaderProvider.class)
+@EnableConfigurationProperties({LeaderAwareConfigurationProperties.class, ZookeeperLeaderConfigurationProperties.class})
 public class ZookeeperLeaderAutoConfiguration {
 
-    private final ZookeeperLeaderConfigurationProperties zookeeperLeaderConfigurationProperties;
+    private static final String PROVIDER_TYPE_NAME = "zookeeper";
 
-    private final LeaderConfigurationProperties leaderConfigurationProperties;
-
-    private final CuratorFramework curatorFramework;
-
-    public ZookeeperLeaderAutoConfiguration(ZookeeperLeaderConfigurationProperties zookeeperLeaderConfigurationProperties, LeaderConfigurationProperties leaderConfigurationProperties, CuratorFramework curatorFramework) {
-        this.zookeeperLeaderConfigurationProperties = zookeeperLeaderConfigurationProperties;
-        this.leaderConfigurationProperties = leaderConfigurationProperties;
-        this.curatorFramework = curatorFramework;
+    @Bean
+    public LeaderProviderMarker leaderProviderMarker() {
+        return new LeaderProviderMarker(PROVIDER_TYPE_NAME);
     }
 
     @Bean
-    @ConditionalOnMissingBean(LeaderInitiator.class)
-    LeaderInitiatorFactoryBean leaderInitiator() {
-        return new LeaderInitiatorFactoryBean()
-                .setClient(curatorFramework)
-                .setPath(zookeeperLeaderConfigurationProperties.getPath())
-                .setRole(leaderConfigurationProperties.getRole());
+    @ConditionalOnLeaderAwareRoles
+    public static ZookeeperLeaderInitiatorPostProcessor zookeeperLeaderInitiatorPostProcessor() {
+        return new ZookeeperLeaderInitiatorPostProcessor();
     }
 
     @Bean
-    public LeaderProvider leaderProvider(LeaderInitiator leaderInitiator) {
-        return leaderInitiator::getContext;
+    public static BeanDefinitionRegistryPostProcessor zookeeperLeaderProviderPostProcessor() {
+        return new LeaderProviderPostProcessor<>(LeaderInitiator.class, ZookeeperLeaderProvider.class);
     }
 
+    private static class ZookeeperLeaderInitiatorPostProcessor extends AbstractLeaderInitiatorPostProcessor {
+
+        @Override
+        protected BeanDefinition leaderInitiatorBeanDefinition(BeanFactory beanFactory, String role, ApplicationEventPublisher applicationEventPublisher) {
+            ZookeeperLeaderConfigurationProperties zookeeperLeaderConfigurationProperties = beanFactory.getBean(ZookeeperLeaderConfigurationProperties.class);
+            return BeanDefinitionBuilder.genericBeanDefinition(LeaderInitiatorFactoryBeanAdapter.class)
+                    .addConstructorArgValue(beanFactory.getBean(CuratorFramework.class))
+                    .addConstructorArgValue(role)
+                    .addConstructorArgValue(zookeeperLeaderConfigurationProperties.getPath())
+                    .getBeanDefinition();
+        }
+
+        static class LeaderInitiatorFactoryBeanAdapter extends LeaderInitiatorFactoryBean {
+
+            public LeaderInitiatorFactoryBeanAdapter(CuratorFramework client, String role, String path) {
+                super();
+                super.setClient(client)
+                        .setRole(role)
+                        .setPath(path);
+            }
+
+        }
+    }
+
+    static class ZookeeperLeaderProvider implements LeaderProvider {
+
+        private final LeaderInitiator leaderInitiator;
+
+        ZookeeperLeaderProvider(LeaderInitiator leaderInitiator) {
+            this.leaderInitiator = leaderInitiator;
+        }
+
+        @Override
+        public Context context() {
+            return leaderInitiator.getContext();
+        }
+    }
 }

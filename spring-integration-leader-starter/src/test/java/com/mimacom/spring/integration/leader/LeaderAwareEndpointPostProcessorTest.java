@@ -32,6 +32,8 @@ public class LeaderAwareEndpointPostProcessorTest {
 
     static final String SAMPLE_ENDPOINT_NAME = "SAMPLE_ENDPOINT_NAME";
 
+    private static final String DEFAULT_ROLE = "default-role";
+
     @Autowired
     @Qualifier(SAMPLE_ENDPOINT_NAME)
     private AbstractEndpoint testingEndpoint;
@@ -45,7 +47,7 @@ public class LeaderAwareEndpointPostProcessorTest {
         assertThat(testingEndpoint.isRunning()).isFalse();
 
         // when
-        applicationEventPublisher.publishEvent(new OnGrantedEvent(new Object(), mock(Context.class), "test-role"));
+        applicationEventPublisher.publishEvent(new OnGrantedEvent(new Object(), mock(Context.class), DEFAULT_ROLE));
 
         // then
         assertThat(testingEndpoint.isRunning()).isTrue();
@@ -57,7 +59,7 @@ public class LeaderAwareEndpointPostProcessorTest {
         testingEndpoint.start();
 
         // when
-        applicationEventPublisher.publishEvent(new OnRevokedEvent(new Object(), mock(Context.class), "test-role"));
+        applicationEventPublisher.publishEvent(new OnRevokedEvent(new Object(), mock(Context.class), DEFAULT_ROLE));
 
         // then
         assertThat(testingEndpoint.isRunning()).isFalse();
@@ -71,7 +73,7 @@ public class LeaderAwareEndpointPostProcessorTest {
 
         @Bean
         LeaderAwareEndpointPostProcessor leaderAwareEndpointPostProcessor() {
-            return new LeaderAwareEndpointPostProcessor(Collections.singletonList(SAMPLE_ENDPOINT_NAME));
+            return new LeaderAwareEndpointPostProcessor(DEFAULT_ROLE, Collections.singletonList(SAMPLE_ENDPOINT_NAME));
         }
 
         @Bean

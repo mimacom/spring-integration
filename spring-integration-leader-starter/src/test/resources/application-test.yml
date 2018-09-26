@@ -1,0 +1,7 @@
+spring:
+  application:
+    name: my-service
+spring-integration:
+  leader-aware:
+    roles: test-role-1, test-role-2
+    endpoints: testing-endpoint
