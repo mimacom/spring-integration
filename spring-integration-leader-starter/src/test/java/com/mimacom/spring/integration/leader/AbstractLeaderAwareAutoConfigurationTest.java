@@ -44,7 +44,8 @@ public abstract class AbstractLeaderAwareAutoConfigurationTest {
         assertThat(leaderAwareEndpointPostProcessor).isNotNull();
         assertThat(leaderProviders).isNotEmpty();
         assertThat(leaderHealthIndicator).isNotNull();
-        await().untilAsserted(() -> assertThat(testFlow.isRunning()).isTrue());
+        await()
+                .untilAsserted(() -> assertThat(testFlow.isRunning()).isTrue());
     }
 
     @Configuration
