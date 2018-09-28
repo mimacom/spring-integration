@@ -3,5 +3,7 @@ spring:
     name: my-service
 
 spring-integration:
-  leader-aware:
+  leader:
     roles: test-role-1, test-role-2
+    zookeeper:
+      path: /test/path/

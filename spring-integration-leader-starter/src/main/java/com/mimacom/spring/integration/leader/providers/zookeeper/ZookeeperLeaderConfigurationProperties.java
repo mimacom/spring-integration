@@ -12,9 +12,11 @@ import org.springframework.validation.annotation.Validated;
 @Validated
 public class ZookeeperLeaderConfigurationProperties implements EnvironmentAware {
 
-    private static final String DEFAULT_PATH_FORMAT = "/spring/%s/leader/";
+    private static final String DEFAULT_PATH_FORMAT = "/spring/leader/%s/";
 
-    private static final String DEFAULT_PATH_NAME = "ALL";
+    private static final String DEFAULT_PATH_NAME = "default";
+
+    private boolean enabled = true;
 
     @NotBlank
     private String path;
@@ -37,4 +39,11 @@ public class ZookeeperLeaderConfigurationProperties implements EnvironmentAware 
         this.path = path;
     }
 
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
 }

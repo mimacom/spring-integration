@@ -15,14 +15,15 @@ import org.springframework.integration.support.locks.LockRegistry;
 import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(properties = "spring-integration.leader.zookeeper.enabled=false")
+@SpringBootTest(properties = {
+        "spring-integration.leader.zookeeper.enabled=false",
+        "spring.cloud.zookeeper.enabled=false"
+})
 public class LockRegistryLeaderAwareAutoConfigurationTest extends AbstractLeaderAwareAutoConfigurationTest {
 
-    @SpringBootApplication(exclude = {
-            org.springframework.cloud.zookeeper.ZookeeperAutoConfiguration.class,
-            com.mimacom.spring.integration.zookeeper.ZookeeperAutoConfiguration.class
-    })
+    @SpringBootApplication
     static class TestConfigUsingLockRegistry {
+
 
         @Bean
         public LockRegistry lockRegistry(LockRepository lockRepository) {

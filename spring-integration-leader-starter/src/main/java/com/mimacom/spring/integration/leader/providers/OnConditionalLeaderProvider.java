@@ -11,5 +11,5 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 @Target({ElementType.TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-@ConditionalOnBean(LeaderProviderMarker.class)
+@ConditionalOnBean(LeaderProvider.class)
 public @interface OnConditionalLeaderProvider {}

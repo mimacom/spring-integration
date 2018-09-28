@@ -1,48 +1,38 @@
 package com.mimacom.spring.integration.leader.providers;
 
-import static com.mimacom.spring.integration.leader.providers.AbstractLeaderInitiatorPostProcessor.LEADER_INITIATOR_BEAN_NAME_POSTFIX;
+import static com.mimacom.spring.integration.leader.providers.AbstractLeaderInitiatorRegistrar.LEADER_INITIATOR_BEAN_NAME_POSTFIX;
 
-import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
-import org.springframework.beans.factory.support.BeanDefinitionRegistryPostProcessor;
+import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;
+import org.springframework.core.ResolvableType;
+import org.springframework.core.type.AnnotationMetadata;
 import org.springframework.util.Assert;
 
-public class LeaderProviderPostProcessor<T, P> implements BeanDefinitionRegistryPostProcessor {
+public class LeaderProviderRegistrar<T, P> implements ImportBeanDefinitionRegistrar {
 
     private static final String LEADER_PROVIDER_BEAN_NAME_POSTFIX = "_leaderProvider";
 
-    private final Class<T> leaderInitiatorClazz;
-
-    private final Class<P> leaderProviderClazz;
-
     private int counter = 0;
 
-    public LeaderProviderPostProcessor(Class<T> leaderInitiatorClazz, Class<P> leaderProviderClazz) {
-        this.leaderInitiatorClazz = leaderInitiatorClazz;
-        this.leaderProviderClazz = leaderProviderClazz;
-    }
-
     @Override
-    public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry) throws BeansException {
+    public void registerBeanDefinitions(AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry) {
+        ResolvableType resolvableType = ResolvableType.forClass(LeaderProviderRegistrar.class, this.getClass());
+        Class<T> leaderInitiatorClazz = (Class<T>) resolvableType.getGeneric(0).getType();
+        Class<P> leaderProviderClazz = (Class<P>) resolvableType.getGeneric(1).getType();
         Assert.isInstanceOf(ConfigurableListableBeanFactory.class, registry);
         ConfigurableListableBeanFactory beanFactory = (ConfigurableListableBeanFactory) registry;
         beanFactory.getBeansOfType(leaderInitiatorClazz)
                 .forEach((leaderInitiatorBeanName, leaderInitiator) ->
                         registry.registerBeanDefinition(
                                 leaderProviderBeanName(leaderInitiatorBeanName),
-                                leaderProviderBeanDefinition(leaderInitiator)
+                                leaderProviderBeanDefinition(leaderInitiator, leaderProviderClazz)
                         ));
     }
 
-    @Override
-    public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
-        // nothing to do
-    }
-
-    private BeanDefinition leaderProviderBeanDefinition(T leaderInitiator) {
+    private BeanDefinition leaderProviderBeanDefinition(T leaderInitiator, Class<P> leaderProviderClazz) {
         return BeanDefinitionBuilder.genericBeanDefinition(leaderProviderClazz)
                 .addConstructorArgValue(leaderInitiator)
                 .getBeanDefinition();

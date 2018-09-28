@@ -8,7 +8,7 @@ import javax.validation.constraints.NotNull;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.annotation.Validated;
 
-@ConfigurationProperties("spring-integration.leader-aware")
+@ConfigurationProperties("spring-integration.leader")
 @Validated
 public class LeaderAwareConfigurationProperties {
 

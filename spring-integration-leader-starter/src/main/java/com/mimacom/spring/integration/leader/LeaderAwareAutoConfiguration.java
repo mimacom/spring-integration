@@ -17,7 +17,6 @@ import org.springframework.context.annotation.Configuration;
         LockRegistryLeaderAutoConfiguration.class
 })
 @EnableConfigurationProperties(LeaderAwareConfigurationProperties.class)
-@OnConditionalLeaderProvider
 public class LeaderAwareAutoConfiguration {
 
     private final LeaderAwareConfigurationProperties leaderAwareConfigurationProperties;
@@ -27,6 +26,7 @@ public class LeaderAwareAutoConfiguration {
     }
 
     @Bean
+    @OnConditionalLeaderProvider
     LeaderAwareEndpointRolePostProcessor leaderAwareEndpointPostProcessor() {
         return new LeaderAwareEndpointRolePostProcessor(leaderAwareConfigurationProperties.getRoles());
     }

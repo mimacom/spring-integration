@@ -32,7 +32,7 @@ public class HazelcastLeaderAwareAutoConfigurationTest extends AbstractLeaderAwa
     @Configuration
     @EnableAutoConfiguration(exclude = {
             org.springframework.cloud.zookeeper.ZookeeperAutoConfiguration.class,
-            com.mimacom.spring.integration.zookeeper.ZookeeperAutoConfiguration.class
+           // com.mimacom.spring.integration.zookeeper.ZookeeperAutoConfiguration.class
     })
     static class TestConfigUsingHazelcast {
 

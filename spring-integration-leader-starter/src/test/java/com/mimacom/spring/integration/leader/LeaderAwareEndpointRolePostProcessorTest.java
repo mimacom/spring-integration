@@ -67,7 +67,7 @@ public class LeaderAwareEndpointRolePostProcessorTest {
 
     @SpringBootApplication(exclude = {
             org.springframework.cloud.zookeeper.ZookeeperAutoConfiguration.class,
-            com.mimacom.spring.integration.zookeeper.ZookeeperAutoConfiguration.class
+            //com.mimacom.spring.integration.zookeeper.ZookeeperAutoConfiguration.class
     })
     static class TestConfig {
 
