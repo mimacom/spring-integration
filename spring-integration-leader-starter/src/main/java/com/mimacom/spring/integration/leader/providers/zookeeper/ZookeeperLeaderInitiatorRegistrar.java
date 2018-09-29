@@ -8,6 +8,7 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.boot.context.properties.bind.Bindable;
 import org.springframework.boot.context.properties.bind.Binder;
+import org.springframework.boot.context.properties.bind.validation.ValidationBindHandler;
 import org.springframework.integration.zookeeper.config.LeaderInitiatorFactoryBean;
 
 class ZookeeperLeaderInitiatorRegistrar extends AbstractLeaderInitiatorRegistrar {
@@ -25,8 +26,13 @@ class ZookeeperLeaderInitiatorRegistrar extends AbstractLeaderInitiatorRegistrar
 
     private ZookeeperLeaderConfigurationProperties zookeeperLeaderConfigurationProperties() {
         return Binder.get(environment)
-                .bind("spring-integration.leader.zookeeper", Bindable.of(ZookeeperLeaderConfigurationProperties.class))
-                .orElseThrow(() -> new IllegalStateException("ZookeeperLeaderConfigurationProperties not available"));
+                .bind("spring-integration.leader.zookeeper", Bindable.of(ZookeeperLeaderConfigurationProperties.class), new ValidationBindHandler())
+                .orElseGet(() -> {
+                    // TODO: Clean this hack if no 'spring-integration.leader.zookeeper' has been defined -> create a new one
+                    ZookeeperLeaderConfigurationProperties zookeeperLeaderConfigurationProperties = new ZookeeperLeaderConfigurationProperties();
+                    zookeeperLeaderConfigurationProperties.setEnvironment(environment);
+                    return zookeeperLeaderConfigurationProperties;
+                });
     }
 
     static class ZookeeperLeaderInitiatorFactoryBeanAdapter extends LeaderInitiatorFactoryBean {
@@ -37,7 +43,6 @@ class ZookeeperLeaderInitiatorRegistrar extends AbstractLeaderInitiatorRegistrar
                     .setRole(role)
                     .setPath(path);
         }
-
 
     }
 }

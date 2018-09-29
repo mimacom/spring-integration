@@ -1,6 +1,5 @@
 package com.mimacom.spring.integration.leader;
 
-import static com.mimacom.spring.integration.leader.LeaderAwareEndpointRolePostProcessorTest.SAMPLE_ENDPOINT_NAME;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
@@ -12,10 +11,11 @@ import org.junit.runner.RunWith;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.integration.config.EnableIntegration;
 import org.springframework.integration.dsl.IntegrationFlow;
 import org.springframework.integration.dsl.IntegrationFlows;
 import org.springframework.integration.endpoint.AbstractEndpoint;
@@ -27,10 +27,10 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(properties = {"spring-integration.leader.endpoints=" + SAMPLE_ENDPOINT_NAME})
+@SpringBootTest
 public class LeaderAwareEndpointRolePostProcessorTest {
 
-    static final String SAMPLE_ENDPOINT_NAME = "SAMPLE_ENDPOINT_NAME";
+    private static final String SAMPLE_ENDPOINT_NAME = "SAMPLE_ENDPOINT_NAME";
 
     private static final String DEFAULT_ROLE = "default-role";
 
@@ -65,10 +65,8 @@ public class LeaderAwareEndpointRolePostProcessorTest {
         assertThat(testingEndpoint.isRunning()).isFalse();
     }
 
-    @SpringBootApplication(exclude = {
-            org.springframework.cloud.zookeeper.ZookeeperAutoConfiguration.class,
-            //com.mimacom.spring.integration.zookeeper.ZookeeperAutoConfiguration.class
-    })
+    @Configuration
+    @EnableIntegration
     static class TestConfig {
 
         @Bean

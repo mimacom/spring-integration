@@ -16,7 +16,11 @@ import org.springframework.integration.hazelcast.leader.LeaderInitiator;
 import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(properties = {"spring.hazelcast.config=classpath:config/my-hazelcast.xml"})
+@SpringBootTest(properties = {
+        "spring-integration.leader.zookeeper.enabled=false",
+        "spring.hazelcast.config=classpath:config/my-hazelcast.xml",
+        "spring-integration.leader.type=hazelcast"
+})
 public class HazelcastLeaderAwareAutoConfigurationTest extends AbstractLeaderAwareAutoConfigurationTest {
 
     @Autowired(required = false)
@@ -30,10 +34,7 @@ public class HazelcastLeaderAwareAutoConfigurationTest extends AbstractLeaderAwa
     }
 
     @Configuration
-    @EnableAutoConfiguration(exclude = {
-            org.springframework.cloud.zookeeper.ZookeeperAutoConfiguration.class,
-           // com.mimacom.spring.integration.zookeeper.ZookeeperAutoConfiguration.class
-    })
+    @EnableAutoConfiguration
     static class TestConfigUsingHazelcast {
 
 

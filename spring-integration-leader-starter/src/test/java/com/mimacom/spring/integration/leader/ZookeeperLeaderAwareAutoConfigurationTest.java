@@ -9,6 +9,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.zookeeper.ZookeeperProperties;
@@ -18,11 +19,17 @@ import org.springframework.integration.zookeeper.leader.LeaderInitiator;
 import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest
+@SpringBootTest(properties = {
+        "spring-integration.leader.type=zookeeper"
+})
 public class ZookeeperLeaderAwareAutoConfigurationTest extends AbstractLeaderAwareAutoConfigurationTest {
 
     @Autowired(required = false)
     private List<LeaderInitiator> leaderInitiator;
+
+    @Autowired
+    @Qualifier("test-role-1_leaderInitiator")
+    private LeaderInitiator leaderInitiatorOne;
 
     @Test
     public void testZookeeperBasedLeaderInitiator() {
@@ -41,7 +48,6 @@ public class ZookeeperLeaderAwareAutoConfigurationTest extends AbstractLeaderAwa
             zookeeperProperties.setConnectString(this.testingServer().getConnectString());
             return zookeeperProperties;
         }
-
 
         @Bean(destroyMethod = "close")
         TestingServer testingServer() throws Exception {

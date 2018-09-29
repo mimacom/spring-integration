@@ -5,9 +5,10 @@ import javax.sql.DataSource;
 
 import org.junit.runner.RunWith;
 
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.integration.jdbc.lock.DefaultLockRepository;
 import org.springframework.integration.jdbc.lock.JdbcLockRegistry;
 import org.springframework.integration.jdbc.lock.LockRepository;
@@ -17,13 +18,13 @@ import org.springframework.test.context.junit4.SpringRunner;
 @RunWith(SpringRunner.class)
 @SpringBootTest(properties = {
         "spring-integration.leader.zookeeper.enabled=false",
-        "spring.cloud.zookeeper.enabled=false"
+        "spring-integration.leader.type=lock-registry"
 })
 public class LockRegistryLeaderAwareAutoConfigurationTest extends AbstractLeaderAwareAutoConfigurationTest {
 
-    @SpringBootApplication
+    @Configuration
+    @EnableAutoConfiguration
     static class TestConfigUsingLockRegistry {
-
 
         @Bean
         public LockRegistry lockRegistry(LockRepository lockRepository) {

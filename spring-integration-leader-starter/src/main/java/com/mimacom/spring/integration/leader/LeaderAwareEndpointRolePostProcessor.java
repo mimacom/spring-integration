@@ -10,7 +10,7 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.integration.endpoint.AbstractEndpoint;
 
-public class LeaderAwareEndpointRolePostProcessor implements BeanPostProcessor {
+class LeaderAwareEndpointRolePostProcessor implements BeanPostProcessor {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LeaderAwareEndpointRolePostProcessor.class);
 
