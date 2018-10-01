@@ -13,7 +13,7 @@ import org.springframework.util.Assert;
 
 public class LeaderProviderRegistrar<T, P> implements ImportBeanDefinitionRegistrar {
 
-    private static final String LEADER_PROVIDER_BEAN_NAME_POSTFIX = "_leaderProvider";
+    public static final String LEADER_PROVIDER_BEAN_NAME_POSTFIX = "_LeaderProvider";
 
     private int counter = 0;
 
