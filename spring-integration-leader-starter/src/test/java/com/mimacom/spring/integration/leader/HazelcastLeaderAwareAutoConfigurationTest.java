@@ -17,7 +17,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(properties = {
-        "spring-integration.leader.zookeeper.enabled=false",
+        "spring.cloud.zookeeper.enabled=false",
         "spring.hazelcast.config=classpath:config/my-hazelcast.xml",
         "spring-integration.leader.type=hazelcast"
 })

@@ -17,6 +17,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(properties = {
+        "spring.cloud.zookeeper.enabled=false",
         "spring-integration.leader.zookeeper.enabled=false",
         "spring-integration.leader.type=lock-registry"
 })

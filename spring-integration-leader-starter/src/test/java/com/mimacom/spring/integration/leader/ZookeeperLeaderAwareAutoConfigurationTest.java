@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 
+import com.mimacom.spring.integration.leader.providers.AbstractLeaderInitiatorRegistrar;
 import org.apache.curator.test.TestingServer;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,7 +30,7 @@ public class ZookeeperLeaderAwareAutoConfigurationTest extends AbstractLeaderAwa
     private List<LeaderInitiator> leaderInitiator;
 
     @Autowired
-    @Qualifier("test-role-1_LeaderInitiator")
+    @Qualifier("test-role-1" + AbstractLeaderInitiatorRegistrar.LEADER_INITIATOR_BEAN_NAME_POSTFIX)
     private LeaderInitiator leaderInitiatorOne;
 
     @Test

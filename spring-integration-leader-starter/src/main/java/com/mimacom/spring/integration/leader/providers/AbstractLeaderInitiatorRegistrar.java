@@ -13,7 +13,7 @@ import org.springframework.util.Assert;
 
 public abstract class AbstractLeaderInitiatorRegistrar implements ImportBeanDefinitionRegistrar, EnvironmentAware {
 
-    static final String LEADER_INITIATOR_BEAN_NAME_POSTFIX = "_leaderInitiator";
+    public static final String LEADER_INITIATOR_BEAN_NAME_POSTFIX = "_LeaderInitiator";
 
     protected Environment environment;
 
