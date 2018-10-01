@@ -38,6 +38,12 @@ public class LeaderAwareAutoConfiguration {
     }
 
     @Bean
+    @OnConditionalLeaderProvider
+    public LeaderAwareAspect leaderAwareAspect() {
+        return new LeaderAwareAspect();
+    }
+
+    @Bean
     public LeaderProviderValidator leaderProviderValidator(ObjectProvider<List<LeaderProvider>> leaderProviders) {
         return new LeaderProviderValidator(leaderProviders);
     }
